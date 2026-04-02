@@ -8,21 +8,32 @@
         :root { --primary: #1b5e20; --secondary: #4caf50; --bg: #f0f2f5; --text: #2c3e50; --accent: #ff9800; --white: #ffffff; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); margin: 0; padding-bottom: 85px; color: var(--text); overflow-x: hidden; }
+        
         header { background: var(--primary); color: white; padding: 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .container { max-width: 800px; margin: auto; padding: 15px; }
+
+        /* Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ddd; z-index: 1000; }
         .nav-item { border: none; background: none; font-size: 10px; color: #a0a0a0; cursor: pointer; display: flex; flex-direction: column; align-items: center; flex: 1; }
         .nav-item.active { color: var(--primary); font-weight: 700; }
         .nav-icon { font-size: 22px; margin-bottom: 3px; }
+
+        /* Tabs */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* PDF Embed */
         .pdf-container { width: 100%; height: 80vh; border-radius: 15px; overflow: hidden; border: 1px solid #ddd; background: white; }
         iframe { width: 100%; height: 100%; border: none; }
+
+        /* Cards */
         .card { background: white; border-radius: 18px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .comp-topic { background: #f1f8e9; border-left: 4px solid var(--secondary); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 14px; }
+        
+        /* Quran Grid */
         .verse-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; }
-        .btn-v { background: #f8f9fa; border: 1.5px solid #e9ecef; padding: 15px 0; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--primary); }
+        .btn-v { background: #f8f9fa; border: 1.5px solid #e9ecef; padding: 15px 0; border-radius: 12px; cursor: pointer; font-weight: 700; color: var(--primary); transition: all 0.2s; }
         .btn-v.playing { background: var(--accent); color: white; border-color: #f57c00; box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3); }
     </style>
 </head>
@@ -34,36 +45,40 @@
 </header>
 
 <div class="container">
+
+    <!-- HIFZ TAB -->
     <div id="hifz" class="tab-content active">
         <div class="card" style="text-align: center; border: 2px dashed var(--accent);">
-            <div id="hifz-status" style="font-weight: 800; font-size: 17px; color: var(--primary);">Memorization (Hifz)</div>
+            <div id="hifz-status" style="font-weight: 800; font-size: 17px; color: var(--primary);">Tap to Play/Pause</div>
         </div>
         <div id="hifz-list"></div>
     </div>
 
+    <!-- TILAWAT TAB -->
     <div id="tilawat" class="tab-content">
         <div class="card" style="text-align: center; border: 2px dashed var(--secondary);">
-            <div id="tilawat-status" style="font-weight: 800; font-size: 17px; color: var(--primary);">Recitation (Tilawat)</div>
+            <div id="tilawat-status" style="font-weight: 800; font-size: 17px; color: var(--primary);">Tap to Play/Pause</div>
         </div>
         <div id="tilawat-list"></div>
     </div>
 
+    <!-- SALAT TAB -->
     <div id="salat" class="tab-content">
         <div class="card">
             <h2 style="color: var(--primary); margin-top: 0;">🕌 Salat & Adiyah</h2>
             <div class="comp-topic"><b>Niyyat, Thanaa, & Al-Fatihah</b> (With Translation)</div>
-            <div class="comp-topic"><b>Daily Prayers:</b> After Wudhu & Entering Mosque</div>
         </div>
     </div>
 
+    <!-- EVENTS TAB -->
     <div id="comp" class="tab-content">
         <div class="card">
             <h2 style="color: var(--primary); margin-top: 0;">🏆 Competitions</h2>
-            <div class="comp-topic"><b>Speech:</b> Guardians of Salat / Being Watchful of Trusts</div>
-            <div class="comp-topic"><b>Observation:</b> Memorize 20 items in 3 minutes</div>
+            <div class="comp-topic"><b>Speeches:</b> Watchful of Trusts / Guarding Salat</div>
         </div>
     </div>
 
+    <!-- PDF TAB -->
     <div id="pdf-tab" class="tab-content">
         <div class="pdf-container">
             <iframe src="Hilal 9-10 - 2026 Atfal Ijtema Syllabus.pdf" type="application/pdf"></iframe>
@@ -87,23 +102,23 @@
     const tilawatStatus = document.getElementById('tilawat-status');
 
     const hifzSyllabus = [
-        { id: 2, name: "Al-Baqarah (1-9)", buttons: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], f: "Surah_002" },
-        { id: 104, name: "Al-Humazah", buttons: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], f: "Surah_104" },
-        { id: 105, name: "Al-Fil", buttons: [1, 2, 3, 4, 5, 6], f: "Surah_105" },
-        { id: 106, name: "Quraish", buttons: [1, 2, 3, 4, 5], f: "Surah_106" },
-        { id: 107, name: "Al-Ma'un", buttons: [1, 2, 3, 4, 5, 6, 7, 8], f: "Surah_107" },
-        { id: 108, name: "Al-Kauthar", buttons: [1, 2, 3, 4], f: "Surah_108" },
-        { id: 109, name: "Al-Kafirun", buttons: [1, 2, 3, 4, 5, 6, 7], f: "Surah_109" },
-        { id: 110, name: "An-Nasr", buttons: [1, 2, 3, 4], f: "Surah_110" },
-        { id: 111, name: "Al-Lahab", buttons: [1, 2, 3, 4, 5, 6], f: "Surah_111" },
-        { id: 112, name: "Al-Ikhlas", buttons: [1, 2, 3, 4, 5], f: "Surah_112" },
-        { id: 113, name: "Al-Falaq", buttons: [1, 2, 3, 4, 5, 6], f: "Surah_113" },
-        { id: 114, name: "An-Nas", buttons: [1, 2, 3, 4, 5, 6, 7], f: "Surah_114" }
+        { id: 2, name: "Al-Baqarah (1-9)", buttons: [1,2,3,4,5,6,7,8,9,10], f: "Surah_002" },
+        { id: 104, name: "Al-Humazah", buttons: [1,2,3,4,5,6,7,8,9,10], f: "Surah_104" },
+        { id: 105, name: "Al-Fil", buttons: [1,2,3,4,5,6], f: "Surah_105" },
+        { id: 106, name: "Quraish", buttons: [1,2,3,4,5], f: "Surah_106" },
+        { id: 107, name: "Al-Ma'un", buttons: [1,2,3,4,5,6,7,8], f: "Surah_107" },
+        { id: 108, name: "Al-Kauthar", buttons: [1,2,3,4], f: "Surah_108" },
+        { id: 109, name: "Al-Kafirun", buttons: [1,2,3,4,5,6,7], f: "Surah_109" },
+        { id: 110, name: "An-Nasr", buttons: [1,2,3,4], f: "Surah_110" },
+        { id: 111, name: "Al-Lahab", buttons: [1,2,3,4,5,6], f: "Surah_111" },
+        { id: 112, name: "Al-Ikhlas", buttons: [1,2,3,4,5], f: "Surah_112" },
+        { id: 113, name: "Al-Falaq", buttons: [1,2,3,4,5,6], f: "Surah_113" },
+        { id: 114, name: "An-Nas", buttons: [1,2,3,4,5,6,7], f: "Surah_114" }
     ];
 
     const tilawatSyllabus = [
-        { id: 31, name: "Luqman (1-6)", buttons: [1, 2, 3, 4, 5, 6], f: "Surah_031" },
-        { id: 87, name: "Al-A'la (15-20)", buttons: [1, 15, 16, 17, 18, 19, 20], f: "Surah_087" }
+        { id: 31, name: "Luqman (1-6)", buttons: [1,2,3,4,5,6], f: "Surah_031" },
+        { id: 87, name: "Al-A'la (15-20)", buttons: [1,15,16,17,18,19,20], f: "Surah_087" }
     ];
 
     function nav(id, el) {
@@ -121,13 +136,14 @@
             card.innerHTML = `<div style="font-weight:bold; color:var(--primary); margin-bottom:10px;">Surah ${s.name}</div>`;
             const grid = document.createElement('div');
             grid.className = 'verse-grid';
-            s.buttons.forEach((btnLabel, index) => {
+            s.buttons.forEach((btnNum, index) => {
                 const b = document.createElement('button');
                 b.className = 'btn-v';
-                b.id = `btn-${s.id}-${btnLabel}`;
-                b.innerText = btnLabel;
-                const fileNum = (s.id === 87) ? btnLabel : (index + 1);
-                b.onclick = () => play(s, btnLabel, fileNum);
+                b.id = `btn-${s.id}-${btnNum}`;
+                b.innerText = btnNum;
+                // Special Rule for Surah 87: Button 15 plays verse_15.mp3, 16 plays verse_16.mp3...
+                const fileNum = (s.id === 87) ? btnNum : (index + 1);
+                b.onclick = () => play(s, btnNum, fileNum);
                 grid.appendChild(b);
             });
             card.appendChild(grid);
@@ -137,13 +153,29 @@
 
     function play(s, btnLabel, fileNum) {
         const path = `quran_audio/${s.f}/verse_${fileNum}.mp3`;
-        document.querySelectorAll('.btn-v').forEach(b => b.classList.remove('playing'));
         const btn = document.getElementById(`btn-${s.id}-${btnLabel}`);
-        if(btn) btn.classList.add('playing');
+        
+        // CHECK: Pause/Resume logic
+        if (player.src.endsWith(path)) {
+            if (!player.paused) {
+                player.pause();
+                btn.classList.remove('playing');
+                return;
+            } else {
+                player.play();
+                btn.classList.add('playing');
+                return;
+            }
+        }
+
+        // NEW VERSE: Reset buttons and play fresh
+        document.querySelectorAll('.btn-v').forEach(b => b.classList.remove('playing'));
+        btn.classList.add('playing');
         
         const label = (btnLabel === 1) ? `Bismillah` : `Verse ${btnLabel}`;
-        hifzStatus.innerText = `${s.name}: ${label}`;
-        tilawatStatus.innerText = `${s.name}: ${label}`;
+        const statusText = `${s.name}: ${label}`;
+        hifzStatus.innerText = statusText;
+        tilawatStatus.innerText = statusText;
         
         player.src = path;
         player.play().catch(e => console.log("Missing:", path));
